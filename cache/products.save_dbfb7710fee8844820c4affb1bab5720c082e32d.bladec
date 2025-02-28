@@ -1,0 +1,92 @@
+<?php $_shouldextend[1]=1; ?>
+
+<?php $this->startSection('content'); ?>
+<div class="page-content">
+ <div class="container-fluid">
+ <?php echo $this->runChild('components.breadcrumb', ['title' => $title, 'breadcrumb' => $breadcrumb]); ?>
+ <div class="row">
+ <div class="col-lg-12">
+ <div class="card">
+ <div class="card-header">
+ <h5 class="card-title mb-0">
+ <?= htmlspecialchars($breadcrumb) ?>
+ </h5>
+ </div>
+ <div class="card-body">
+ <?php 
+ $action = ($method === 'create')
+ ? "/admin/$module/store"
+ : "/admin/$module/update/" . $data['id'];
+ ?>
+
+
+
+ <div class="container p-4">
+ <form action="<?php echo \htmlentities($action??'', ENT_QUOTES, 'UTF-8', false); ?>" method="post" enctype="multipart/form-data" class="row g-4"
+ style="max-width: 800px; margin: auto;">
+ <?php if($method === 'edit'): ?>
+ <input type='hidden' name='_method' value='<?php echo 'put'; ?>'/>
+ <?php endif; ?>
+
+ <div class="col-md-6 mb-3">
+ <label for="name" class="form-label">Product Name</label>
+ <input type="text" name="name" id="name" class="form-control" placeholder="Enter product name"
+ value="<?php echo \htmlentities(old('name', isset($data['name']) ? $data['name'] : '')??'', ENT_QUOTES, 'UTF-8', false); ?>" required>
+ <?php if(!empty($_SESSION['errors']['name'])): ?>
+ <div class="text-danger"><?php echo \htmlentities($_SESSION['errors']['name']??'', ENT_QUOTES, 'UTF-8', false); ?></div>
+ <?php unset($_SESSION['errors']['name']); ?>
+ <?php endif; ?>
+ </div>
+
+ <div class="col-md-6 mb-3">
+ <label for="category_id" class="form-label">Category</label>
+ <select name="category_id" id="category_id" class="form-control" required>
+ <option value="">-- Chọn danh mục --</option>
+ <?php $__currentLoopData = $categories; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $category): $loop = $this->incrementLoopIndices();  ?>
+ <option value="<?php echo \htmlentities($category['id']??'', ENT_QUOTES, 'UTF-8', false); ?>" <?php echo \htmlentities(isset($data['category_id']) &&
+ $data['category_id']==$category['id'] ? 'selected' : ''??'', ENT_QUOTES, 'UTF-8', false); ?>>
+ <?php echo \htmlentities($category['name']??'', ENT_QUOTES, 'UTF-8', false); ?>
+
+ </option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ <?php if(!empty($_SESSION['errors']['category_id'])): ?>
+ <div class="text-danger"><?php echo \htmlentities($_SESSION['errors']['category_id']??'', ENT_QUOTES, 'UTF-8', false); ?></div>
+ <?php unset($_SESSION['errors']['category_id']); ?>
+ <?php endif; ?>
+ </div>
+
+ <div class="col-md-6 mb-3">
+ <label for="img_thumbnail" class="form-label">Thumbnail</label>
+ <input type="file" name="img_thumbnail" id="img_thumbnail" class="form-control">
+ <?php if(!empty($data['img_thumbnail'])): ?>
+
+ <img
+ src="<?= (strpos($data['img_thumbnail'] , 'http') === 0) ? $data['img_thumbnail']  : '/' . $data['img_thumbnail']  ?>"
+ alt="Product Image" class="img-thumbnail mt-2" width="150">
+
+ <?php endif; ?>
+ </div>
+
+ <div class="col-12 text-end mt-4">
+ <button type="submit" class="btn btn-success">Lưu</button>
+ <button type="reset" class="btn btn-secondary">Nhập lại</button>
+ </div>
+ </form>
+
+
+ </div>
+
+ </div>
+ </div>
+ </div>
+ </div>
+
+
+
+ </div>
+</div>
+<?php $this->stopSection(); ?>
+
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layout'); } ?>
